@@ -14,6 +14,7 @@
 	<RepositoryUrl>https://github.com/BobsFriends/Bobs.Shell</RepositoryUrl>
 	<PackageTags>shell;link</PackageTags>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<Description>Shell library containing types like the ShellLink</Description>
   </PropertyGroup>
 
   <ItemGroup>
