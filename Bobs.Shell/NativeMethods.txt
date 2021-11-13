@@ -1,0 +1,10 @@
+﻿CoCreateInstance
+ShellLink
+IShellLinkW
+IPersistFile
+MAX_PATH
+INFOTIPSIZE
+SLR_FLAGS
+SLGP_FLAGS
+SHOW_WINDOW_CMD
+VIRTUAL_KEY
