@@ -1,6 +1,6 @@
-using Xunit;
-using Bobs.Shell;
+using System.Drawing;
 using System.IO;
+using Xunit;
 
 namespace Bobs.Shell.Tests
 {
@@ -61,6 +61,13 @@ namespace Bobs.Shell.Tests
             Assert.Equal(shellLink1.IconLocation, shellLink2.IconLocation);
             Assert.Equal(shellLink1.IconIndex, shellLink2.IconIndex);
             Assert.Equal(shellLink1.ShowCommand, shellLink2.ShowCommand);
+        }
+
+        [Fact]
+        public void GetIcon_RetrievesIcon()
+        {
+            ShellLink shellLink = new(@"C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Accessories\WordPad.lnk");
+            using Icon? icon = shellLink.GetIcon(32);
         }
     }
 }

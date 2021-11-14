@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -82,6 +83,50 @@ namespace Bobs.Shell
                 throw new PlatformNotSupportedException("The ShellLink is currently only supported on Windows.");
 
             WriteShellLink(path);
+        }
+
+        public Icon? GetIcon(int iconSize)
+        {
+            if (!OperatingSystem.IsWindowsVersionAtLeast(5, 1, 2600))
+                throw new PlatformNotSupportedException("The ShellLink is currently only supported on Windows.");
+
+            string? iconLocation = Environment.ExpandEnvironmentVariables(IconLocation ?? String.Empty);
+            int iconIndex = IconIndex ?? 0;
+            if (string.IsNullOrEmpty(iconLocation) || !File.Exists(iconLocation))
+            {
+                iconIndex = 0;
+                iconLocation = Environment.ExpandEnvironmentVariables(Target ?? String.Empty);
+                if ((string.IsNullOrEmpty(iconLocation)) || !File.Exists(iconLocation))
+                    return null;
+            }
+
+            HRESULT hr = PInvoke.SHDefExtractIcon(
+                iconLocation, iconIndex, 0,
+                out DestroyIconSafeHandle iconHandle,
+                out DestroyIconSafeHandle smallIconHandle,
+                (uint)iconSize
+                );
+            try
+            {
+                if (!hr.Succeeded)
+                    hr.ThrowOnFailure();
+
+                using Icon tempIcon = Icon.FromHandle(iconHandle.DangerousGetHandle());
+                if (tempIcon == null)
+                    return null;
+
+                MemoryStream memoryStream = new();
+                tempIcon.Save(memoryStream);
+                memoryStream.Position = 0;
+                return new Icon(memoryStream);
+            }
+            finally
+            {
+                if (!iconHandle.IsClosed)
+                    iconHandle.Dispose();
+                if (!smallIconHandle.IsClosed)
+                    smallIconHandle.Dispose();
+            }
         }
 
         public override string ToString()
