@@ -111,6 +111,9 @@ namespace Bobs.Shell
                 if (!hr.Succeeded)
                     hr.ThrowOnFailure();
 
+                if (iconHandle.IsClosed || iconHandle.IsInvalid)
+                    return null;
+
                 using Icon tempIcon = Icon.FromHandle(iconHandle.DangerousGetHandle());
                 if (tempIcon == null)
                     return null;
